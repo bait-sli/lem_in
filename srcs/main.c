@@ -6,72 +6,51 @@
 /*   By: bait-sli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 17:24:25 by bait-sli          #+#    #+#             */
-/*   Updated: 2017/12/14 17:24:27 by bait-sli         ###   ########.fr       */
+/*   Updated: 2018/02/09 04:41:43 by bait-sli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-void ft_init(t_env *env)
+static void		ft_init(t_env *env)
 {
-  env->network = NULL;
-  env->map = NULL;
-  env->path = NULL;
-  env->ants_nbr = 0;
-  env->start_ants = 0;
-  env->end_ants = 0;
-  env->verif.ants_ok = 0;
-  env->verif.start_ok = 0;
-  env->verif.end_ok = 0;
-  env->verif.end_vertice = 0;
-  env->matched = 0;
+	env->network = NULL;
+	env->map = NULL;
+	env->path = NULL;
+	env->ants_nbr = 0;
+	env->verif.ants_ok = 0;
+	env->verif.start_ok = 0;
+	env->verif.end_ok = 0;
+	env->verif.end_vertice = 0;
 }
 
-static void print_vertice(t_vertice **map)
+static void		reverse(t_path **l)
 {
-  t_vertice *elem;
+	t_path		*inv;
+	t_path		*head;
 
-  elem = *map;
-  while(elem != NULL)
-  {
-    printf("name: %s usage %d\n", elem->name, elem->usage);
-    elem = elem->next;
-  }
+	inv = *l;
+	if (inv && inv->next)
+	{
+		head = inv->next;
+		reverse(&(inv->next));
+		head->next = inv;
+		*l = inv->next;
+		head->next->next = NULL;
+	}
 }
 
-static void print_path(t_path **path)
+int				main(void)
 {
-  t_path *elem;
+	t_env		env;
 
-  elem = *path;
-  while(elem != NULL)
-  {
-    printf("SOLUTION: %s\n", elem->step);
-    elem = elem->next;
-  }
-}
-
-static void print_network(t_pipe **network)
-{
-  t_pipe *elem;
-
-  elem = *network;
-  while(elem != NULL)
-  {
-    printf("room1: %s room2 %s\n", elem->room1, elem->room2);
-    elem = elem->next;
-  }
-}
-int main(void)
-{
-  t_env env;
-
-  ft_init(&env);
-  ft_parse(&env);
-  printf("ANTS NBR: %d\n", env.ants_nbr);
-  print_vertice(&env.map);
-  print_network(&env.network);
-  ft_resolve(&env);
-  print_path(&env.path);
-  return(0);
+	ft_init(&env);
+	ft_parse(&env);
+	if (env.ants_nbr <= 0)
+		ft_error(ERR, &env);
+	ft_resolve(&env);
+	reverse(&env.path);
+	ft_print_result(&env.path, env.ants_nbr);
+	free_env(&env);
+	return (0);
 }

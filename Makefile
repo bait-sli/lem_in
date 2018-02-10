@@ -6,7 +6,7 @@
 #    By: bait-sli <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/28 06:45:12 by bait-sli          #+#    #+#              #
-#    Updated: 2017/12/14 17:27:41 by bait-sli         ###   ########.fr        #
+#    Updated: 2018/02/09 04:28:53 by bait-sli         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,18 +16,21 @@ NAME = lem_in
 SRCS_NAME =	main.c \
 						add_pipe.c \
 						check_line.c \
-						print_path.c \
 						add_room.c \
 						ft_parsing.c \
 						resolve.c \
-						build_graph.c
+						build_path.c\
+						ft_print_solution.c\
+						errors.c\
+						free_mem.c\
+						lem_in.c
 
 SRCS_PATH       = srcs/
 SRCS            = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 OBJ_NAME        = $(SRCS_NAME:.c=.o)
 OBJ_PATH        = obj/
 OBJ             = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
-FLAGS           =
+FLAGS           = -Wall -Wextra -Werror
 INC             = -I./includes/ -I./libft/
 LIB             = -L libft -lft\
 

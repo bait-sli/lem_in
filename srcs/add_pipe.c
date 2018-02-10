@@ -6,50 +6,60 @@
 /*   By: bait-sli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 17:22:53 by bait-sli          #+#    #+#             */
-/*   Updated: 2017/12/14 17:23:03 by bait-sli         ###   ########.fr       */
+/*   Updated: 2018/02/09 02:50:08 by bait-sli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-static void put_data(t_pipe *connect, char *line)
+static int		ft_verif(char *str, t_vertice **map)
 {
-  char **tmp;
+	t_vertice	*elem;
 
-  tmp = ft_strsplit(line, '-');
-  connect->room1 = ft_strdup(tmp[0]);
-  connect->room2 = ft_strdup(tmp[1]);
-  connect->call = 0;
-  free(tmp);
+	elem = *map;
+	while (elem != NULL)
+	{
+		if (ft_strcmp(str, elem->name) == 0)
+			return (1);
+		elem = elem->next;
+	}
+	return (0);
 }
 
-static int ft_ok(char *str, t_vertice **map)
+static void		put_data(t_pipe *connect, char *line)
 {
-  t_vertice *elem;
+	char		**tmp;
 
-  elem = *map;
-  while(elem != NULL)
-  {
-    if(ft_strcmp(str, elem->name) == 0)
-      return(1);
-    elem = elem->next;
-  }
-  return(0);
+	tmp = ft_strsplit(line, '-');
+	connect->room1 = ft_strdup(tmp[0]);
+	connect->room2 = ft_strdup(tmp[1]);
+	free_split(tmp);
+	free(tmp);
 }
 
-void ft_add_pipe(t_pipe **network, char *line, t_env *env)
+int				ft_add_pipe(t_pipe **network, char *line, t_env *env)
 {
-  t_pipe *elem;
+	t_pipe		*elem;
 
-  elem = (t_pipe*)malloc(sizeof(t_pipe) * 1);
-  put_data(elem, line);
-  if(ft_ok(elem->room1, &env->map) == 1 && ft_ok(elem->room2, &env->map) == 1 && ft_strcmp(elem->room1, elem->room2) != 0)
-  {
-    if(network)
-    {
-      if(elem)
-        elem->next = *network;
-      *network = elem;
-    }
-  }
+	if (!(elem = (t_pipe*)malloc(sizeof(t_pipe) * 1)))
+		return (0);
+	put_data(elem, line);
+	if (ft_verif(elem->room1, &env->map) == 1 && ft_verif(elem->room2,
+				&env->map) == 1 && ft_strcmp(elem->room1, elem->room2) != 0)
+	{
+		if (network)
+		{
+			if (elem)
+				elem->next = *network;
+			*network = elem;
+		}
+		else
+		{
+			*network = elem;
+			elem->next = NULL;
+		}
+		return (1);
+	}
+	ft_memdel((void**)elem);
+	return (0);
 }
