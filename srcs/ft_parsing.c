@@ -51,7 +51,7 @@ void			ft_parse(t_env *env)
 {
 	char		*line;
 
-	while (get_next_line(0, &line))
+	while (get_next_line(0, &line) > 0)
 	{
 		if (check_line(line, env) == 0)
 		{
